@@ -1,13 +1,16 @@
 import React, { useState } from "react";
 import { buttonsArray } from "./buttons";
-import { stringify } from "querystring";
+import "./main.css";
 
 const Main = () => {
   const [screen, setScreen] = useState("0");
   const [currentInput, setCurrentInput] = useState("");
   const [previousInput, setPreviousInput] = useState("");
   const [operator, setOperator] = useState("");
+  const [inputArray, setInputArray] = useState<any>([]);
+
   function handleClick(event: string) {
+    setScreen("");
     if (/[0-9]/.test(event)) {
       setScreen((prevScreen) => {
         const newInput = prevScreen === "0" ? event : prevScreen + event;
@@ -21,7 +24,9 @@ const Main = () => {
           setPreviousInput(currentInput);
           setOperator(event);
           const newInput = prevScreen + "" + event + "";
+          setPreviousInput(currentInput);
           setCurrentInput("");
+          
           return newInput;
         } else {
           return prevScreen;
@@ -32,28 +37,27 @@ const Main = () => {
       setCurrentInput("0");
     } else if (event == "=") {
       if (previousInput && operator && currentInput) {
+        console.log("prev", previousInput);
+        console.log("curr", currentInput);
         const result = Calculate(previousInput, operator, currentInput);
-        console.log(result)
+        console.log("res", result);
         setScreen(result.toString());
-        
-        console.log(screen);
-        setPreviousInput("");
+        setPreviousInput(result.toString());
         setCurrentInput("");
-        setOperator("");
       }
     }
   }
-  function Calculate(number1: string, operator : string , number2: string) {
+  function Calculate(number1: string, operator: string, number2: string) {
     const num1 = parseFloat(number1);
     const num2 = parseFloat(number2);
     switch (operator) {
-      case "+" :
+      case "+":
         return num1 + num2;
-      case "*" :
+      case "*":
         return num1 * num2;
-      case "-" :
+      case "-":
         return num1 - num2;
-      case "/" :
+      case "/":
         return num1 / num2;
       default:
         return number2;
